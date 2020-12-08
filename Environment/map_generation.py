@@ -39,11 +39,14 @@ min_map = np.genfromtxt('YpacaraiMap_big.csv', delimiter=',')
 maps = []
 importance_maps = []
 
+init_points = np.array([[5,6],[11,12],[17,19],[23,25]])
+
 for r in resolution:
 
     resized = rescale(min_map, 0.06*r, anti_aliasing=True, order = 3)
     resized[resized < 0.4*255] = 0
     resized[resized >= 0.4*255] = 1
+    #resized[init_points[r-1,0], init_points[r-1,1]] = np.nan
     importance_map = generate_gaussian_maps(resized, peaks*r, sigma*r*r)
 
     np.savetxt('map_{}.csv'.format(r), resized, delimiter=',')

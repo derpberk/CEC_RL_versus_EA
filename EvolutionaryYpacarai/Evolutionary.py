@@ -18,23 +18,25 @@ for i in range(4):
     maps.append(np.genfromtxt('map_{}.csv'.format(i+1), delimiter=','))
     importance_maps.append(np.genfromtxt('importance_map_{}.csv'.format(i+1), delimiter=','))
 
+init_points = np.array([[5,6],[11,12],[17,19],[23,25]])
 
-def evolute(cxpb = 0.6, mutpb = 0.3):
+
+def evolute(cxpb = 0.8, mutpb = 0.2):
 
     hof_buffer = []
     logbook_buffer = []
 
-    for r in range(len(maps)):
+    for r in range(len(maps)-3):
 
         # Creation of the environment #
 
         print(" ---- OPTIMIZING MAP NUMBER {} ----".format(r+1))
 
-        env = Lake(filepath='YpacaraiMap_minor.csv',
+        env = Lake(filepath='map_{}.csv'.format(r+1),
                    number_of_agents = 1,
                    action_type="complete",
-                   init_pos=np.array([[6, 6], [4, 4]]),
-                   importance_map_path='importance_map.csv')
+                   init_pos=init_points[r][np.newaxis],
+                   importance_map_path='importance_map_{}.csv'.format(r+1))
 
         IND_SIZE = 8 # Number of actions #
 
@@ -72,7 +74,7 @@ def evolute(cxpb = 0.6, mutpb = 0.3):
         toolbox.register("evaluate", evalTrajectory)
 
         random.seed(0)
-        CXPB, MUTPB, NGEN = cxpb, mutpb, 30000
+        CXPB, MUTPB, NGEN = cxpb, mutpb, 100
         pop = toolbox.population()
         MU, LAMBDA = len(pop), len(pop)
         hof = tools.HallOfFame(1)
