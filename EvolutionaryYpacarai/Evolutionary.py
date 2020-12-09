@@ -7,6 +7,7 @@ from deap import tools
 import random
 from Environment import Lake
 import pickle
+from copy import deepcopy
 
 
 maps = []
@@ -88,8 +89,8 @@ def evolute(cxpb = 0.8, mutpb = 0.2):
                                                  LAMBDA, CXPB, MUTPB,
                                                  NGEN, stats=stats,
                                                  halloffame=hof)
-        hof_buffer.append(hof)
-        logbook_buffer.append(logbook)
+        hof_buffer.append(deepcopy(hof))
+        logbook_buffer.append(deepcopy(logbook))
 
     return hof_buffer, logbook_buffer
 

@@ -6,7 +6,7 @@ Different resolution Ypacaraí Map Generator
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import multivariate_normal
-import cv2
+import matplotlib
 from skimage.transform import rescale, resize
 
 def generate_gaussian_maps(map, peaks, sigma):
@@ -40,6 +40,9 @@ maps = []
 importance_maps = []
 
 init_points = np.array([[5,6],[11,12],[17,19],[23,25]])
+cmap = matplotlib.cm.inferno
+cmap.set_bad(color = 'red')
+
 
 for r in resolution:
 
@@ -59,10 +62,17 @@ fig, axs = plt.subplots(2, 4)
 
 for i in range(len(resolution)):
 
-    axs[0][i].imshow(maps[i])
-    axs[1][i].imshow(importance_maps[i])
+    axs[0][i].imshow(maps[i],cmap=cmap)
+    axs[1][i].imshow(importance_maps[i], cmap=cmap)
+    axs[0][i].set_xticklabels([])
+    axs[1][i].set_xticklabels([])
+    axs[0][i].set_yticklabels([])
+    axs[1][i].set_yticklabels([])
 
+plt.tight_layout()
+plt.savefig('maps.png',dpi=300)
 plt.show()
+
 
 
 
