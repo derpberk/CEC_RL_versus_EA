@@ -9,7 +9,6 @@ from Environment import Lake
 import pickle
 
 
-
 maps = []
 importance_maps = []
 
@@ -18,7 +17,7 @@ for i in range(4):
     maps.append(np.genfromtxt('map_{}.csv'.format(i+1), delimiter=','))
     importance_maps.append(np.genfromtxt('importance_map_{}.csv'.format(i+1), delimiter=','))
 
-init_points = np.array([[5,6],[11,12],[17,19],[23,25]])
+init_points = np.array([[5, 6], [11, 12], [17, 19], [23, 25]])
 
 
 def evolute(cxpb = 0.8, mutpb = 0.2):
@@ -26,7 +25,7 @@ def evolute(cxpb = 0.8, mutpb = 0.2):
     hof_buffer = []
     logbook_buffer = []
 
-    for r in range(len(maps)-3):
+    for r in range(len(maps)):
 
         # Creation of the environment #
 
@@ -118,7 +117,7 @@ def plot_evolucion(log, i):
 if __name__ == "__main__":
 
     v_best, v_log = evolute()
-    print("Mejor fitness: %f" % v_best[0].fitness.values)
+    print("Mejor fitness: %f" % v_best[0].keys[0].values[0])
     print("Mejor individuo %s" % v_best[0])
 
     with open('v_best', 'wb') as f:
