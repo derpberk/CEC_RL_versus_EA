@@ -9,6 +9,7 @@ from Environment import Lake
 import pickle
 from copy import deepcopy
 import argparse
+import multiprocessing
 
 maps = []
 importance_maps = []
@@ -40,6 +41,9 @@ def evolute(r = 1, cxpb = 0.8, mutpb = 0.2):
     creator.create('Individual', list, fitness=creator.FitnessMax)
 
     toolbox = base.Toolbox()
+
+    pool = multiprocessing.Pool(processes=10)
+    toolbox.register("map", pool.map)
 
     # Generate a random action set
 
