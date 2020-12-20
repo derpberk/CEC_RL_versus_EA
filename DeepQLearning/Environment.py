@@ -156,6 +156,7 @@ class Lake:
         """ A idle time matrix. Each position represents the number f timesteps the cell 
         has remain unvisited since the last visit. """
         self.absolute_importance_substraction = 0.2
+        """ Percentage of the importance a cell loses when visited. DEPENDENT OF THE N. OF AGENTS"""
 
         # Mark the first positions as visited #
         for n in range(self.num_of_agents):

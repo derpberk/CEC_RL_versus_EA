@@ -42,7 +42,8 @@ env = Lake(filepath='map_{}.csv'.format(r),
            number_of_agents=1,
            action_type="complete",
            init_pos=init_points[r - 1][np.newaxis],
-           importance_map_path='importance_map_{}.csv'.format(r))
+           importance_map_path='importance_map_{}.csv'.format(r),
+           num_of_moves=30*r)
 
 IND_SIZE = 8  # Number of actions #
 
