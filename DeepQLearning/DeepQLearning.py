@@ -68,7 +68,7 @@ if __name__ == "__main__":
     epsilon = 0.99
     lr = 1e-4
     n_actions = 8
-    input_dims = (4, 14, 10)
+    input_dims = env.render.shape
     eps_min = 0.005
     eps_dec = (epsilon-eps_min)/(num_of_epochs*0.4)
   
