@@ -62,6 +62,7 @@ class DDQNAgent(object):
         self.prioritized = prioritized
         self.temperature = temperature
         self.tau = tau
+        self.mem_size = mem_size
 
         if not self.prioritized:
             self.memory = ReplayBuffer(mem_size, input_dims, action_joint_dim)
@@ -75,7 +76,10 @@ class DDQNAgent(object):
         
         self.q_next = DeepQNetwork(self.lr, num_agents=action_joint_dim, action_size=n_actions, input_size=input_dims)
         self.q_next.cuda()
-        
+
+    def reset_memory(self):
+        self.memory = ReplayBuffer(self.mem_size, self.input_dims, self.action_joint_dim)
+
     def store_transition(self, state, action, reward, next_state, done):
         """
 
@@ -235,7 +239,7 @@ class DDQNAgent(object):
         """
 
         Learning function. It predicts the return (target_network) and takes a descent gradient step. The q-values are
-        calculated with Time Difference and we will accumulate the results of the gradients along the agents.
+        calculated with Time Difference and we will accumulate the other_results of the gradients along the agents.
 
         ------
         """
@@ -246,7 +250,7 @@ class DDQNAgent(object):
             return
         
         if mask is None:
-            mask = np.zeros(shape=self.num_agents)
+            mask = np.zeros(shape=self.action_joint_dim)
 
         self.q_eval.optimizer.zero_grad()
         self.q_next.optimizer.zero_grad()

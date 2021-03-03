@@ -1,6 +1,6 @@
 
 """
-    Training of a Deep Q-Learning for the Single-agent Ypacarai Case comparison with EA
+    Training of a Deep Q-Learning for the Multi-agent Ypacarai Case
 
 """
 import sys
@@ -28,12 +28,12 @@ if __name__ == "__main__":
 
     # Parsing arguments #
     parser = argparse.ArgumentParser(description='Ypacari Multi-agent Double Deep Q-Learning training.')
-    parser.add_argument('-R', metavar='R', type=int,
-                        help='Resolution', default=2)
+    parser.add_argument('-N', metavar='N', type=int,
+                        help='Number of agents.', default=2)
     parser.add_argument('-E', metavar='E', type=int,
-                        help='Number of epochs.', default=30000)
-
-    init_points = np.array([[5, 6], [11, 12], [17, 19], [23, 25]])
+                        help='Number of epochs.', default=1500)
+    parser.add_argument('-S', metavar='S', type=int,
+                        help='Number of steps per epoch.', default=60)
 
     args = parser.parse_args()
 
@@ -41,24 +41,15 @@ if __name__ == "__main__":
     end = False
     signal.signal(signal.SIGINT, signal_handler)
     
-    """ Directory """
-    now = datetime.now()
-    directory = now.strftime("./results/TRAINING_DDQL_%d_%m_%Y_%H_%M_%S")
-    os.makedirs(directory)
-    
-    """ For Logging """
-    writer = SummaryWriter()
-    
+
     # Create the evironment
     num_of_agents = args.N
 
-    r = args.R
-    env = Lake(filepath='map_{}.csv'.format(r),
-               number_of_agents=1,
+    env = Lake(filepath='map_2.csv',
+               number_of_agents=num_of_agents,
                action_type="complete",
-               init_pos=init_points[r - 1][np.newaxis],
-               importance_map_path='importance_map_{}.csv'.format(r),
-               num_of_moves=30*r)
+               init_pos=np.array([[11, 12], [15, 14]]),
+               importance_map_path='importance_map_2.csv')
 
     """ --- HYPERPARAMETERS --- """
 
@@ -68,12 +59,12 @@ if __name__ == "__main__":
     epsilon = 0.99
     lr = 1e-4
     n_actions = 8
-    input_dims = env.render.shape
+    input_dims = env.render().shape
     eps_min = 0.005
-    eps_dec = (epsilon-eps_min)/(num_of_epochs*0.4)
+    eps_dec = (epsilon-eps_min)/(num_of_epochs*0.5)
   
     mem_size = 10000
-    batch_size = 32
+    batch_size = 64
     update_target_count = 100
     action_joint_dim = num_of_agents
     prob_alpha = 0.6
@@ -116,7 +107,7 @@ if __name__ == "__main__":
 
     )
 
-    """ --- Buffers for results --- """
+    """ --- Buffers for other_results --- """
     filtered_reward_buff = []
     reward_buff = []
     record = -np.Inf  # Initial record #
@@ -162,16 +153,15 @@ if __name__ == "__main__":
 
         # Save the record network #
         if episode_reward > record:
-            torch.save(multi_agent.q_eval, directory + '/BEST_Q_NETWORK_{}.pt'.format(r))
+   
             print("New record of {}.".format(episode_reward))
             record = episode_reward
-            np.savetxt(directory + '/iddle_mat_{}.csv'.format(r),env.idle_matrix, delimiter=',')
-            np.savetxt(directory + '/visited_mat_{}.csv'.format(r), env.visited_matrix, delimiter = ',')
+            np.savetxt('iddle_mat.csv',env.idle_matrix, delimiter=',')
+            np.savetxt('visited_mat.csv', env.visited_matrix, delimiter = ',')
 
-        """ ---- Data and results presentation ---- """
+        """ ---- Data and other_results presentation ---- """
 
         reward_buff.append(episode_reward)
-        writer.add_scalar('training/Acc_reward',episode_reward,epoch)
 
         if end:
             print("\n ---- PROCESS MANUALLY FINISHED IN EPOCH {} ----\n".format(epoch))
@@ -180,10 +170,40 @@ if __name__ == "__main__":
 
     """ Once the training is finished """
 
-    print("FINISHED!")
+    print("TRAINING FINISHED!")
+    print("TESTING GENERALIZATION!")
+
+    for p in range(20):
+
+        """ Reset the scenario. """
+        env.reset()
+
+        env.is_dead[0] = 1
+
+        print("Posicion inicial: {}".format(env.positions[0]))
+
+        """ First state adquisition. """
+        state = env.render()
+        """ Episode reward """
+        episode_reward = 0
+
+        for step in range(steps_per_episode):
+            # Choose an action #
+            action = multi_agent.choose_action(state, mode='egreedy')
+
+            # Apply the action joint #
+            next_state, reward = env.step(action)
+
+            # Update the state #
+            state = next_state
+
+            # Accumulate episode reward #
+            episode_reward += np.sum(reward)
+
+        print("Recompensa: {}".format(episode_reward))
 
     # Save the rewards
-    np.savetxt(directory + '/reward_{}.csv'.format(r), reward_buff, delimiter=',')
+    np.savetxt('reward.csv', reward_buff, delimiter=',')
     env.create_log()
 
     
