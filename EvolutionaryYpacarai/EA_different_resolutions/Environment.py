@@ -156,7 +156,6 @@ class Lake:
         """ A idle time matrix. Each position represents the number f timesteps the cell 
         has remain unvisited since the last visit. """
         self.absolute_importance_substraction = 0.2
-        """ Percentage of the importance a cell loses when visited. DEPENDENT OF THE N. OF AGENTS"""
 
         # Mark the first positions as visited #
         for n in range(self.num_of_agents):
@@ -380,7 +379,7 @@ class Lake:
 
     def verify_and_update_movement(self, intended_position):
         """
-            Receives the intended positions of every agent and computes if the movement results in a illegal move or
+            Receives the intended positions of every agent and computes if the movement other_results in a illegal move or
             in a collision between agents. Then update the position of every agent.
 
             -----
@@ -683,7 +682,7 @@ class Lake:
  
     def verify_movement(self, intended_position):
         """
-            Receives the intended positions of every agent and computes if the movement results in a illegal move or
+            Receives the intended positions of every agent and computes if the movement other_results in a illegal move or
             in a collision between agents. Then update the position of every agent.
 
             -----

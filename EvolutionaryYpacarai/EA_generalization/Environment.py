@@ -379,7 +379,7 @@ class Lake:
 
     def verify_and_update_movement(self, intended_position):
         """
-            Receives the intended positions of every agent and computes if the movement results in a illegal move or
+            Receives the intended positions of every agent and computes if the movement other_results in a illegal move or
             in a collision between agents. Then update the position of every agent.
 
             -----
@@ -682,7 +682,7 @@ class Lake:
  
     def verify_movement(self, intended_position):
         """
-            Receives the intended positions of every agent and computes if the movement results in a illegal move or
+            Receives the intended positions of every agent and computes if the movement other_results in a illegal move or
             in a collision between agents. Then update the position of every agent.
 
             -----
