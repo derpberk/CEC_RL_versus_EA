@@ -1,4 +1,4 @@
-# Deep RL vs Evolutionary Algorithm comparison.
+# A Dimensional Comparison between Evolutionary Algorithm and Deep Reinforcement Learning Methodologies for Autonomous Surface Vehicles with Water Quality Sensors
 
 Comparison between Deep Reinforcement Learning algorithms and Evolutionary Algorithms for the Patrolling Problem in the Ypacaraí case.
 
